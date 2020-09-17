@@ -1,11 +1,10 @@
 import sys
 
-from edu.iastate.tofmsdataanalysis.analysis import critical_value_analysis
-from edu.iastate.tofmsdataanalysis.application import config
-from edu.iastate.tofmsdataanalysis.hdf5processor.hdf5processor import hdf5processor
+from src.edu.iastate.tofmsdataanalysis.analysis import critical_value_analysis
+from src.edu.iastate.tofmsdataanalysis.application.config import config
+from src.edu.iastate.tofmsdataanalysis.hdf5processor.hdf5processor import hdf5processor
 
 
-# Entry point for the application, this runs all the modules for the data analyis.
 def main(argv):
     critical_values: list = None
 
