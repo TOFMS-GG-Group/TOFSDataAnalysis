@@ -14,6 +14,14 @@ class CriticalValueAnalysis:
             for x in it:
                 x[...] = np.sum(np.random.choice(sis_array_norm, x))
 
+        # for row in cmpd_array:
+        #     for x in row:
+        #         tmp = np.sum(np.random.choice(sis_array_norm, x))
+        #         x = tmp
+
+        # operation_vec = np.vectorize(lambda q: np.sum(np.random.choice(sis_array_norm, q)))
+        # operation_vec(cmpd_array)
+
         l_c_array = np.array([])
 
         for i in range(len(alpha)):
@@ -24,13 +32,17 @@ class CriticalValueAnalysis:
                 l_c = s_c - avg_OneLambdaArray
                 l_c_array = np.append(l_c_array, l_c)
 
-        # x = sqrt_ct_rate_array
-        # y = l_c_array
-        #
-        # reshaped_data = np.reshape(l_c_array, (-1, 10))
-        #
-        # for i in reshaped_data:
-        #     plt.plot(x, reshaped_data[i])
+        reshaped_l_c = np.reshape(l_c_array, (7, 10))
+
+        print("")
+
+        for l_c in reshaped_l_c:
+            x = np.sqrt(ct_rate_array)
+            y = l_c
+            m, b = np.polyfit(x, y, 1)
+            plt.plot(x, y, 'o', color='black')
+            plt.plot(x, m * x + b)
+            plt.show()
 
     # Calculates a critical value from a alpha value, number of ion signals, and a file with the single ion signals.
     # This function returns an array with slope and intercept of the critical value.
@@ -43,7 +55,7 @@ class CriticalValueAnalysis:
                 for j in range(frequency[i]):
                     sis_array.append(float(intensity[i]))
 
-        sis_array_norm = np.true_divide(sis_array, sis_value)
+        sis_array_norm = np.true_divide(sis_array, sis_value) #2.28
 
         # SqRtCrRateArray is the a linearly space (Lambda)^0.5 values used for creating the Poisson Dist.
         # CtRateArray is the array of lambda values for determining the cmpd Poisson distribution.

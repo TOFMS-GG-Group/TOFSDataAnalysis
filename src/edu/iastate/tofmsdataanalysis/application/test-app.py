@@ -25,7 +25,7 @@ def main(argv):
                 config_file.num_ions,
                 profile["Intensity"],
                 profile["Frequency"],
-                profile["AverageSis"])
+                sis_file.average_sis)
 
 
 if __name__ == "__main__":
