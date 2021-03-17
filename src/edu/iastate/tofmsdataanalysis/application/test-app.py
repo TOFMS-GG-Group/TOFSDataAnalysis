@@ -20,15 +20,12 @@ def main(argv):
 
             print(str(profile["NominalMass"]) + "\n")
 
-            # Loops through all the alpha values and calculates the critical values.
-            # TODO: Fix average_sis
-            for i in range(len(config_file.alpha_values)):
-                critical_values[i] = critical_value_analysis.CriticalValueAnalysis.calculate_critical_value_json(
-                    config_file.alpha_values[i],
-                    config_file.num_ions,
-                    profile["Intensity"],
-                    profile["Frequency"],
-                    profile["AverageSis"])
+            critical_values = critical_value_analysis.CriticalValueAnalysis.calculate_critical_value(
+                config_file.alpha_values,
+                config_file.num_ions,
+                profile["Intensity"],
+                profile["Frequency"],
+                profile["AverageSis"])
 
 
 if __name__ == "__main__":
