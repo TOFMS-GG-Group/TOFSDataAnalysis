@@ -56,8 +56,10 @@ class CriticalValueAnalysis:
         monte_carlo_begin = time.perf_counter()
 
         CriticalValueAnalysis.monte_carlo(
-            intensity, frequency, cmpd_array, sis_array_norm, ct_rate_array, alpha, sqrt_ct_rate_array)
+            intensity, frequency, cmpd_array, sis_array_norm, ct_rate_array, alpha)
 
         monte_carlo_end = time.perf_counter()
 
-        print("Monte Carlo took " + str(monte_carlo_end - monte_carlo_begin) + " seconds.")
+        monte_carlo_elapsed_time = monte_carlo_end - monte_carlo_begin
+
+        print(f"Monte Carlo took {monte_carlo_elapsed_time:0.4f} seconds")
