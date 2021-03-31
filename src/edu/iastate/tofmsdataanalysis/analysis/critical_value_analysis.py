@@ -1,4 +1,5 @@
 import time
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -6,7 +7,7 @@ import matplotlib.pyplot as plt
 # Contains the code for preform the critical analysis.
 class CriticalValueAnalysis:
     @staticmethod
-    def monte_carlo(intensity, frequency, cmpd_array, sis_array_norm, ct_rate_array, alpha):
+    def monte_carlo(intensity, frequency, cmpd_array, sis_array_norm, ct_rate_array, alpha, nominal_mass, cache):
         if len(intensity) == 0 or len(frequency) == 0:
             return
 
@@ -34,7 +35,7 @@ class CriticalValueAnalysis:
 
         reshaped_l_c = np.reshape(l_c_array, (7, 10))
 
-        print("")
+        print("Plotting l_c")
 
         for l_c in reshaped_l_c:
             x = np.sqrt(ct_rate_array)
@@ -44,10 +45,14 @@ class CriticalValueAnalysis:
             plt.plot(x, m * x + b)
             plt.show()
 
+            cache.cache(nominal_mass, alpha, reshaped_l_c, ct_rate_array, cache)
+
+        print("Monte Carlo Finished!\n")
+
     # Calculates a critical value from a alpha value, number of ion signals, and a file with the single ion signals.
     # This function returns an array with slope and intercept of the critical value.
     @staticmethod
-    def calculate_critical_value(alpha, num_ions, intensity, frequency, sis_value):
+    def calculate_critical_value(config, intensity, frequency, sis_value, nominal_mass, cache):
         sis_array = []
 
         for i in range(len(frequency)):
@@ -55,23 +60,26 @@ class CriticalValueAnalysis:
                 for j in range(frequency[i]):
                     sis_array.append(float(intensity[i]))
 
-        sis_array_norm = np.true_divide(sis_array, sis_value) #2.28
+        sis_array_norm = np.true_divide(sis_array, sis_value)
 
         # SqRtCrRateArray is the a linearly space (Lambda)^0.5 values used for creating the Poisson Dist.
         # CtRateArray is the array of lambda values for determining the cmpd Poisson distribution.
         sqrt_ct_rate_array = np.linspace(1, 5, num=10)
         ct_rate_array = sqrt_ct_rate_array ** 2
 
-        cts_array = np.random.poisson(lam=ct_rate_array, size=(int(num_ions), len(ct_rate_array)))
+        cts_array = np.random.poisson(lam=ct_rate_array, size=(int(config.num_ions), len(ct_rate_array)))
         cmpd_array = cts_array.transpose()
 
-        monte_carlo_begin = time.perf_counter()
+        is_cached = cache.is_cached(nominal_mass, config.cache_file_location, cache)
 
-        CriticalValueAnalysis.monte_carlo(
-            intensity, frequency, cmpd_array, sis_array_norm, ct_rate_array, alpha)
+        if not is_cached:
+            monte_carlo_begin = time.perf_counter()
 
-        monte_carlo_end = time.perf_counter()
+            CriticalValueAnalysis.monte_carlo(
+                intensity, frequency, cmpd_array, sis_array_norm, ct_rate_array, config.alpha_values, nominal_mass, cache)
 
-        monte_carlo_elapsed_time = monte_carlo_end - monte_carlo_begin
+            monte_carlo_end = time.perf_counter()
 
-        print(f"Monte Carlo took {monte_carlo_elapsed_time:0.4f} seconds")
+            monte_carlo_elapsed_time = monte_carlo_end - monte_carlo_begin
+
+            print(f"Monte Carlo took {monte_carlo_elapsed_time:0.4f} seconds")

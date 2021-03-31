@@ -9,6 +9,7 @@ class config:
     elements_isotope_mapping = None
     sis_file_location = None
     signal_file_location = None
+    cache_file_location = None
     output_file_location = None
     rate_min = None
     rate_max = None
@@ -26,6 +27,7 @@ class config:
 
         self.sis_file_location: str = config_file['sis_file_location']
         self.signal_file_location: str = config_file['signal_file_location']
+        self.cache_file_location: str = config_file['cache_file_location']
         self.output_file_location: str = config_file['output_file_location']
 
         self.rate_min: float = config_file['rate']['min']
