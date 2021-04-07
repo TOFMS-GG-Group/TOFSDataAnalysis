@@ -7,42 +7,57 @@ import numpy as np
 class cache:
     cache_file = None
     mass_to_charges = None
+    was_empty = False
+    path = None
 
     def __init__(self, path):
+        self.path = path
+
         if not os.path.exists(path):
-            # TODO: Create Empty JSON.
-            print("Empty JSON")
-        else:
-            with open(path) as f:
-                cache_file = json.load(f)
+            empty_obj = {"nominal_mass": {"test": {
+                "alphas": [],
+                "slope": [],
+                "intercept": []
+            }}}
+
+            with open(path, 'w') as jsonFile:
+                json.dump(empty_obj, jsonFile)
+                self.was_empty = True
+
+        with open(path, 'r') as jsonFile:
+            cache_file = json.load(jsonFile)
 
         self.mass_to_charges = cache_file['nominal_mass']
 
-    @staticmethod
-    def is_cached(mass_charge, file_path, cache_file):
-        if os.path.exists(file_path):
-            return str(mass_charge) in cache_file.mass_to_charges
+    def is_cached(self, mass_charge):
+        if os.path.exists(self.path):
+            return str(mass_charge) in self.mass_to_charges
 
         return False
 
-    @staticmethod
-    def cache(mass_charge, alpha, reshaped_l_c, ct_rate_array, cache_file):
+    def cache(self, mass_charge, alpha, reshaped_l_c, ct_rate_array, cache_file):
         slopes = [0] * len(alpha)
         intercepts = [0] * len(alpha)
 
         for i in range(len(reshaped_l_c)):
             slopes[i], intercepts[i] = np.polyfit(np.sqrt(ct_rate_array), reshaped_l_c[i], 1)
 
-        value = "{" + \
-                "\"nominal_mass\":" + \
-                    "{" + \
-                        "\"" + str(mass_charge) + "\":" + \
-                        "{" + \
-                            "\"" + "alphas" + "\":" + str(alpha) + "," + \
-                            "\"" + "slope" + "\":" + str(slopes) + "," + \
-                            "\"" + "intercept" + "\":" + str(intercepts) +\
-                        "}" + \
-                    "}" + \
-                "}"
+        with open(self.path) as json_file:
+            data = json.load(json_file)
 
-        print("")
+            json_obj = {
+                str(mass_charge): {
+                    "alphas": alpha,
+                    "slopes": slopes,
+                    "intercepts": intercepts
+                }
+            }
+
+            data['nominal_mass'].update(json_obj)
+
+        with open(self.path, 'w') as jsonFile:
+            if self.was_empty:
+                # TODO: Delete the empty JSON object.
+                del data["nominal_mass"]["test"]
+
+            json.dump(data, jsonFile)
