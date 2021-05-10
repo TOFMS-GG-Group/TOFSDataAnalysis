@@ -10,7 +10,7 @@ class utility:
             if point == data[i]:
                 return [point, float('inf')]
 
-        if list_has_point == False:
+        if not list_has_point:
             data.append(point)
             data.sort()
 

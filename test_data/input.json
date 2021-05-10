@@ -1,0 +1,40 @@
+{
+    "alpha_values": [
+        1e-05,
+        3e-05,
+        0.0001,
+        0.0003,
+        0.001,
+        0.003,
+        0.01
+    ],
+    "num_ions": 100,
+    "isotope_element_mapping": {
+        "Ti": [
+            "47Ti",
+            "49Ti"
+        ],
+        "Cr": [
+            "52Cr",
+            "53Cr"
+        ],
+        "Fe": [
+            "54Fe",
+            "57Fe"
+        ],
+        "Mn": [
+            "55Mn"
+        ]
+    },
+    "rate": {
+        "min": 0.0,
+        "max": 2
+    },
+    "nominal_masses": [
+        115
+    ],
+    "sis_file_location": "/Users/tylerjaacks/Documents/Projects/School Projects/TestData/sis.json",
+    "signal_file_location": "/Users/tylerjaacks/Documents/Projects/School Projects/TestData/TestData/17h05m36s_H2-He_HEN90_SelfAspirate_1ppbTune.h5",
+    "cache_file_location": "/Users/tylerjaacks/Documents/Projects/School Projects/TestData/cache.json",
+    "output_file_location": "/Users/tylerjaacks/Documents/Projects/School Projects/TestData"
+}
